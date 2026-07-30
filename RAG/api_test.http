@@ -1,0 +1,45 @@
+# Resume RAG Service — API Test File
+# Requires VS Code extension: REST Client (humao.rest-client)
+# Click "Send Request" above each request block
+# Server must be running: uvicorn app.main:app --reload --port 8000
+
+@baseUrl = http://127.0.0.1:8000/api/v1
+
+###
+# [1] Health Check
+GET {{baseUrl}}/health
+Accept: application/json
+
+###
+# [2] Upload Resume PDF
+# Change the file path to point to your actual PDF
+POST {{baseUrl}}/resume/upload
+Content-Type: multipart/form-data; boundary=----FormBoundary
+
+------FormBoundary
+Content-Disposition: form-data; name="file"; filename="resume.pdf"
+Content-Type: application/pdf
+
+< ./sample_resume.pdf
+------FormBoundary--
+
+###
+# [3] Retrieve — Python developer
+GET {{baseUrl}}/retrieve?query=Python+FastAPI+backend+developer&top_k=3
+Accept: application/json
+
+###
+# [4] Retrieve — Machine Learning skills
+GET {{baseUrl}}/retrieve?query=machine+learning+data+engineering&top_k=3
+Accept: application/json
+
+###
+# [5] Retrieve — Education background
+GET {{baseUrl}}/retrieve?query=education+degree+university&top_k=3
+Accept: application/json
+
+###
+# [6] Retrieve — Filter by specific resume_id
+# Replace RESUME_ID with the resume_id returned from upload
+GET {{baseUrl}}/retrieve?query=Python+developer&resume_id=RESUME_ID&top_k=5
+Accept: application/json
